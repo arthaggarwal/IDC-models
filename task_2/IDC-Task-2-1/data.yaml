@@ -1,14 +1,14 @@
-names:
-- Bandages
-- Gauze
-- antiseptic cream
-nc: 3
-roboflow:
-  license: CC BY 4.0
-  project: idc-task-2
-  url: https://universe.roboflow.com/idc-dnyxn/idc-task-2/dataset/1
-  version: 1
-  workspace: idc-dnyxn
-test: ../test/images
+path: C:/Users/Arth Aggarwal/Desktop/IDC_models/task_2/IDC-Task-2-1
 train: ../train/images
 val: ../valid/images
+test: ../test/images
+
+nc: 3
+names: ["Bandages", "Gauze", "antiseptic cream"]
+
+roboflow:
+  workspace: idc-dnyxn
+  project: idc-task-2
+  version: 1
+  license: CC BY 4.0
+  url: https://universe.roboflow.com/idc-dnyxn/idc-task-2/dataset/1
