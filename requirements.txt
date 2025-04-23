@@ -1,0 +1,2 @@
+roboflow
+ultralytics==8.2.103
