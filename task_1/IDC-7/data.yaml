@@ -1,0 +1,15 @@
+path: C:/Users/Arth Aggarwal/Desktop/IDC_models/task_1/IDC-7
+names:
+  - hamburger
+  - hotdog
+  - objects
+nc: 3
+roboflow:
+  license: CC BY 4.0
+  project: idc-6f5s6
+  url: https://universe.roboflow.com/idc-dnyxn/idc-6f5s6/dataset/7
+  version: 7
+  workspace: idc-dnyxn
+test: ../test/images
+train: ../train/images
+val: ../valid/images
