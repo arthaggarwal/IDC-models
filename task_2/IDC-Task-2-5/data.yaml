@@ -1,0 +1,15 @@
+path: C:/Users/Arth Aggarwal/Desktop/IDC_models/task_2/IDC-Task-2-5
+names:
+  - Bandages
+  - Gauze
+  - antiseptic cream
+nc: 3
+roboflow:
+  license: CC BY 4.0
+  project: idc-task-2
+  url: https://universe.roboflow.com/idc-dnyxn/idc-task-2/dataset/5
+  version: 5
+  workspace: idc-dnyxn
+test: ../test/images
+train: ../train/images
+val: ../valid/images
