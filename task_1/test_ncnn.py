@@ -26,6 +26,8 @@ parser.add_argument('--resolution', help='Resolution in WxH to display inference
                     default=None)
 parser.add_argument('--record', help='Record results from video or webcam and save it as "demo1.avi". Must specify --resolution argument to record.',
                     action='store_true')
+parser.add_argument('--mode', help='Detection mode: "hotdog", "hamburger", or "objects"', 
+                    choices=['hotdog', 'hamburger', 'objects'], default='objects')
 
 args = parser.parse_args()
 
@@ -33,9 +35,10 @@ args = parser.parse_args()
 # Parse user inputs
 model_path = args.model
 img_source = args.source
-min_thresh = args.thresh
+min_thresh = float(args.thresh)
 user_res = args.resolution
 record = args.record
+mode = args.mode
 
 # Check if model file exists and is valid
 if (not os.path.exists(model_path)):
@@ -175,13 +178,12 @@ while True:
     object_count = 0
 
     # Go through each detection and get bbox coords, confidence, and class
-    # Go through each detection and get bbox coords, confidence, and class
     for i in range(len(detections)):
 
         # Get bounding box coordinates
-        xyxy_tensor = detections[i].xyxy.cpu() # Detections in Tensor format in CPU memory
-        xyxy = xyxy_tensor.numpy().squeeze() # Convert tensors to Numpy array
-        xmin, ymin, xmax, ymax = xyxy.astype(int) # Extract individual coordinates and convert to int
+        xyxy_tensor = detections[i].xyxy.cpu()
+        xyxy = xyxy_tensor.numpy().squeeze()
+        xmin, ymin, xmax, ymax = xyxy.astype(int)
 
         # Get center x-position of bounding box
         x_center = (xmin + xmax) // 2
@@ -196,18 +198,19 @@ while True:
         # Print x-center position
         print(f'Detected {classname} at x position: {x_center}')
 
-        # Check if the detected object is a hotdog and print its position
-        if classname.lower() == 'hotdog':
-            if x_center < 800:
-                position = 'left'
-            elif x_center > 1050:
-                position = 'right'
-            else:
-                position = 'center'
-            print(f'The hotdog is at the {position}.')
+        # Check for hotdog or hamburger mode
+        if mode in ['hotdog', 'hamburger']:
+            if classname.lower() == mode:
+                if x_center < 800:
+                    position = 'left'
+                elif x_center > 1050:
+                    position = 'right'
+                else:
+                    position = 'center'
+                print(f'The {mode} is at the {position}.')
 
         # Draw box if confidence threshold is high enough
-        if conf > 0.5:
+        if conf > min_thresh:
             color = bbox_colors[classidx % 10]
             cv2.rectangle(frame, (xmin,ymin), (xmax,ymax), color, 2)
 
@@ -218,7 +221,6 @@ while True:
             cv2.putText(frame, label, (xmin, label_ymin-7), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 0), 1)
 
             object_count += 1
-
 
     # Calculate and draw framerate (if using video, USB, or Picamera source)
     if source_type == 'video' or source_type == 'usb' or source_type == 'picamera':
@@ -234,6 +236,8 @@ while True:
         key = cv2.waitKey()
     elif source_type == 'video' or source_type == 'usb' or source_type == 'picamera':
         key = cv2.waitKey(5)
+    else:
+        key = -1
     
     if key == ord('q') or key == ord('Q'): # Press 'q' to quit
         break
@@ -263,5 +267,6 @@ if source_type == 'video' or source_type == 'usb':
     cap.release()
 elif source_type == 'picamera':
     cap.stop()
-if record: recorder.release()
+if record:
+    recorder.release()
 cv2.destroyAllWindows()
