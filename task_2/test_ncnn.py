@@ -3,7 +3,6 @@ import sys
 import argparse
 import glob
 import time
-import serial
 import cv2
 import numpy as np
 from ultralytics import YOLO
@@ -113,11 +112,6 @@ frame_rate_buffer = []
 fps_avg_len = 200
 img_count = 0
 
-# Initialize serial
-if __name__ == '__main__':
-    ser = serial.Serial('/dev/ttyUSB0', 9600, timeout=1)
-    ser.reset_input_buffer()
-
 # Inference loop
 while True:
     t_start = time.perf_counter()
@@ -173,14 +167,8 @@ while True:
                 text = f"{label}: {int(conf * 100)}%"
                 cv2.putText(frame, text, (xmin, ymin - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, color, 2)
 
-    # Logic for serial and LEDs
-    red_light = gauze_count < 3
-    blue_light = bandage_count < 3
-    yellow_light = antiseptic_cream_count < 3
-
+    # Log detection counts
     print(f'Gauze: {gauze_count}, Bandage: {bandage_count}, Antiseptic Cream: {antiseptic_cream_count}')
-    print(f'light_red: {red_light}, blue_light: {blue_light}, light_yellow: {yellow_light}')
-
 
     # Show GUI
     if show_gui:
